@@ -1,0 +1,46 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <changeSet id="V1__InitializeTables" author="onechesz">
+        <createTable tableName="doctor">
+            <column name="id" type="INT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="uuid" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false" />
+            </column>
+            <column name="full_name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createTable tableName="patient">
+            <column name="id" type="INT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="uuid" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false" />
+            </column>
+            <column name="full_name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="birth_date" type="DATE">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createTable tableName="ticket">
+            <column name="id" type="INT" autoIncrement="true" generationType="BY DEFAULT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="doctor_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_ticket_doctor" references="doctor(id)" />
+            </column>
+            <column name="patient_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_ticket_patient" references="patient(id)" />
+            </column>
+            <column name="start_time" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
