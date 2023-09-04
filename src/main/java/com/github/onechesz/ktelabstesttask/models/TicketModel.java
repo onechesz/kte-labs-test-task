@@ -1,6 +1,9 @@
 package com.github.onechesz.ktelabstesttask.models;
 
+import com.github.onechesz.ktelabstesttask.dtos.ticket.TicketDTOO;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +33,11 @@ public class TicketModel {
     public TicketModel(DoctorModel doctorModel, LocalDateTime startTime) {
         this.doctorModel = doctorModel;
         this.startTime = startTime;
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull TicketDTOO convertToTicketDTOO(@NotNull TicketModel ticketModel) {
+        return new TicketDTOO(ticketModel.id, DoctorModel.convertToDoctorDTOO(ticketModel.doctorModel), ticketModel.startTime);
     }
 
     public int getId() {

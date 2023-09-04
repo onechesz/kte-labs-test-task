@@ -1,9 +1,12 @@
 package com.github.onechesz.ktelabstesttask.services;
 
+import com.github.onechesz.ktelabstesttask.dtos.ticket.TicketDTOO;
+import com.github.onechesz.ktelabstesttask.models.DoctorModel;
 import com.github.onechesz.ktelabstesttask.models.TicketModel;
 import com.github.onechesz.ktelabstesttask.repositories.DoctorRepository;
 import com.github.onechesz.ktelabstesttask.repositories.TicketRepository;
 import com.github.onechesz.ktelabstesttask.utils.exceptions.ScheduleNotCreatedException;
+import com.github.onechesz.ktelabstesttask.utils.exceptions.TicketsNotRequestedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -49,5 +53,15 @@ public class TicketService {
         else
             throw new ScheduleNotCreatedException("Количество талонов должно быть положительным числом.");
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketDTOO> findFreeToDoctorByDate(int doctorId, LocalDate date) {
+        Optional<DoctorModel> doctorModelOptional = doctorRepository.findById(doctorId);
+
+        if (doctorModelOptional.isPresent())
+            return ticketRepository.findAllByStartTimeBetweenAndDoctorModelAndPatientModel(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), doctorModelOptional.get(), null).stream().map(TicketModel::convertToTicketDTOO).toList();
+
+        throw new TicketsNotRequestedException("Врач с данным идентификатором не найден.");
     }
 }

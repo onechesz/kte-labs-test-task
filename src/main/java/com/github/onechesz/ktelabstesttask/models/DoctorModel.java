@@ -1,6 +1,9 @@
 package com.github.onechesz.ktelabstesttask.models;
 
+import com.github.onechesz.ktelabstesttask.dtos.doctor.DoctorDTOO;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -23,6 +26,11 @@ public class DoctorModel {
 
     public DoctorModel() {
 
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull DoctorDTOO convertToDoctorDTOO(@NotNull DoctorModel doctorModel) {
+        return new DoctorDTOO(doctorModel.id, doctorModel.fullName);
     }
 
     public int getId() {
