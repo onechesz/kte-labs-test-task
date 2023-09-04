@@ -2,17 +2,17 @@ package com.github.onechesz.ktelabstesttask.endpoints;
 
 import com.github.onechesz.ktelabstesttask.services.TicketService;
 import com.github.onechesz.ktelabstesttask.utils.exceptions.ScheduleNotCreatedException;
-import io.spring.guides.gs_producing_web_service.CreateScheduleRequest;
-import io.spring.guides.gs_producing_web_service.CreateScheduleResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import ws.ktelabstesttask.schedule.CreateScheduleRequest;
+import ws.ktelabstesttask.schedule.CreateScheduleResponse;
 
 @Endpoint
 public class ScheduleEndpoint {
-    private static final String NAMESPACE_URI = "http://schedule.ws.ktelabs/";
+    private static final String NAMESPACE_URI = "http://ktelabstesttask.ws/schedule";
 
     private final TicketService ticketService;
 
@@ -20,7 +20,7 @@ public class ScheduleEndpoint {
         this.ticketService = ticketService;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createSchedule")
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createScheduleRequest")
     @ResponsePayload
     public CreateScheduleResponse createScheduleResponse(@RequestPayload @NotNull CreateScheduleRequest createScheduleRequest) {
         CreateScheduleResponse createScheduleResponse = new CreateScheduleResponse();

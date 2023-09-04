@@ -79,7 +79,7 @@
 				</executions>
 				<configuration>
 					<sources>
-						<source>${project.basedir}/src/main/resources/soap.xsd</source>
+						<source>${project.basedir}/src/main/resources/schedule.xsd</source>
 					</sources>
 				</configuration>
 			</plugin>

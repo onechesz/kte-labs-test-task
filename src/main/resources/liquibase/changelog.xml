@@ -46,4 +46,7 @@
     <changeSet id="V2__DropNotNullConstraintTicketPatientId" author="onechesz">
         <dropNotNullConstraint tableName="ticket" columnName="patient_id" />
     </changeSet>
+    <changeSet id="V3__ModifyDataTypeDoctorUuid" author="onechesz">
+        <modifyDataType tableName="doctor" columnName="uuid" newDataType="VARCHAR(36)" />
+    </changeSet>
 </databaseChangeLog>

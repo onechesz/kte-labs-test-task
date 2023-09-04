@@ -25,24 +25,27 @@ public class TicketService {
 
     public void createDailySchedule(int doctorId, LocalDateTime scheduleStartTime, int duration, int count) {
         if (count > 0)
-            doctorRepository.findById(doctorId).ifPresentOrElse(doctorModel -> {
-                LocalDate scheduleDate = scheduleStartTime.toLocalDate();
+            if (LocalDateTime.now().isBefore(scheduleStartTime))
+                doctorRepository.findById(doctorId).ifPresentOrElse(doctorModel -> {
+                    LocalDate scheduleDate = scheduleStartTime.toLocalDate();
 
-                if (ticketRepository.findAllByStartTimeBetweenAndDoctorModel(scheduleDate.atStartOfDay(), scheduleDate.plusDays(1).atStartOfDay(), doctorModel).isEmpty()) {
-                    List<TicketModel> ticketModelList = new ArrayList<>();
-                    LocalDateTime ticketStartTime = scheduleStartTime;
+                    if (ticketRepository.findAllByStartTimeBetweenAndDoctorModel(scheduleDate.atStartOfDay(), scheduleDate.plusDays(1).atStartOfDay(), doctorModel).isEmpty()) {
+                        List<TicketModel> ticketModelList = new ArrayList<>();
+                        LocalDateTime ticketStartTime = scheduleStartTime;
 
-                    for (int i = 0; i < count; i++) {
-                        ticketModelList.add(new TicketModel(doctorModel, scheduleStartTime));
-                        ticketStartTime = ticketStartTime.plusMinutes(duration);
-                    }
+                        for (int i = 0; i < count; i++) {
+                            ticketModelList.add(new TicketModel(doctorModel, ticketStartTime));
+                            ticketStartTime = ticketStartTime.plusMinutes(duration);
+                        }
 
-                    ticketRepository.saveAll(ticketModelList);
-                } else
-                    throw new ScheduleNotCreatedException("Расписание на данную дату уже составлено.");
-            }, () -> {
-                throw new ScheduleNotCreatedException("Врач с данным идентификатором не найден.");
-            });
+                        ticketRepository.saveAll(ticketModelList);
+                    } else
+                        throw new ScheduleNotCreatedException("Расписание на данную дату уже составлено.");
+                }, () -> {
+                    throw new ScheduleNotCreatedException("Врач с данным идентификатором не найден.");
+                });
+            else
+                throw new ScheduleNotCreatedException("Нельзя создать расписание на прошедшую дату.");
         else
             throw new ScheduleNotCreatedException("Количество талонов должно быть положительным числом.");
 
