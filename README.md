@@ -39,6 +39,7 @@
 <ol>
     <li>Скачать проект и распаковать архив</li>
     <li>Создать базу данных в PostgreSQL и изменить (при необходимости) свойства в файле <strong>application.properties</strong></li>
+    <li>Сгенерировать источники и обновить папки при помощи Maven в файле pom.xml</li>
     <li>Запустить программу при помощи функции main, находящейся в классе <strong>KteLabsTestTaskApplication</strong></li>
 </ol>
 
