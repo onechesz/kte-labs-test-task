@@ -67,6 +67,19 @@ public class TicketController {
         }
     }
 
+    @GetMapping(path = "/{patientId}")
+    @ResponseBody
+    public List<TicketDTOO> requestAllByPatient(@PathVariable(name = "patientId") @NotNull String patientId) {
+        if (patientId.length() < 36)
+            try {
+                return ticketService.findAllByPatientId(Integer.parseInt(patientId));
+            } catch (NumberFormatException numberFormatException) {
+                throw new TicketsNotRequestedException("Неверный формат данного идентификатора пациента.");
+            }
+
+        return ticketService.findAllByPatientUuid(patientId);
+    }
+
     @Contract("_ -> new")
     @ExceptionHandler(value = TicketNotTakenException.class)
     private @NotNull ResponseEntity<ExceptionResponse> ticketNotTakenExceptionHandler(@NotNull TicketNotTakenException ticketNotTakenException) {

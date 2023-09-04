@@ -14,4 +14,6 @@ public interface TicketRepository extends JpaRepository<TicketModel, Integer> {
     List<TicketModel> findAllByStartTimeBetweenAndDoctorModel(LocalDateTime startTime, LocalDateTime endTime, DoctorModel doctorModel);
 
     List<TicketModel> findAllByStartTimeBetweenAndDoctorModelAndPatientModel(LocalDateTime startTime, LocalDateTime endTime, DoctorModel doctorModel, PatientModel patientModel);
+
+    List<TicketModel> findAllByPatientModel(PatientModel patientModel);
 }

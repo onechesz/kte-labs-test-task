@@ -2,6 +2,7 @@ package com.github.onechesz.ktelabstesttask.services;
 
 import com.github.onechesz.ktelabstesttask.dtos.ticket.TicketDTOO;
 import com.github.onechesz.ktelabstesttask.models.DoctorModel;
+import com.github.onechesz.ktelabstesttask.models.PatientModel;
 import com.github.onechesz.ktelabstesttask.models.TicketModel;
 import com.github.onechesz.ktelabstesttask.repositories.DoctorRepository;
 import com.github.onechesz.ktelabstesttask.repositories.PatientRepository;
@@ -83,5 +84,25 @@ public class TicketService {
         }, () -> {
             throw new TicketNotTakenException("Талон с данным идентификатором не найден.");
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketDTOO> findAllByPatientId(int patientId) {
+        Optional<PatientModel> patientModelOptional = patientRepository.findById(patientId);
+
+        if (patientModelOptional.isPresent())
+            return ticketRepository.findAllByPatientModel(patientModelOptional.get()).stream().map(TicketModel::convertToTicketDTOO).toList();
+
+        throw new TicketsNotRequestedException("Пациент с данным идентификатором не найден");
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketDTOO> findAllByPatientUuid(String uuid) {
+        Optional<PatientModel> patientModelOptional = patientRepository.findByUuid(uuid);
+
+        if (patientModelOptional.isPresent())
+            return ticketRepository.findAllByPatientModel(patientModelOptional.get()).stream().map(TicketModel::convertToTicketDTOO).toList();
+
+        throw new TicketsNotRequestedException("Пациент с данным универсальным идентификатором не найден");
     }
 }
