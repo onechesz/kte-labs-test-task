@@ -17,7 +17,7 @@ public class TicketModel {
     private DoctorModel doctorModel;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id")
     private PatientModel patientModel;
 
     @Column(name = "start_time", nullable = false)
@@ -25,6 +25,11 @@ public class TicketModel {
 
     public TicketModel() {
 
+    }
+
+    public TicketModel(DoctorModel doctorModel, LocalDateTime startTime) {
+        this.doctorModel = doctorModel;
+        this.startTime = startTime;
     }
 
     public int getId() {

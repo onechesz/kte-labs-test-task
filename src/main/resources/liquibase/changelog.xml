@@ -43,4 +43,7 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="V2__DropNotNullConstraintTicketPatientId" author="onechesz">
+        <dropNotNullConstraint tableName="ticket" columnName="patient_id" />
+    </changeSet>
 </databaseChangeLog>
