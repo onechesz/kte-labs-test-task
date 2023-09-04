@@ -49,4 +49,7 @@
     <changeSet id="V3__ModifyDataTypeDoctorUuid" author="onechesz">
         <modifyDataType tableName="doctor" columnName="uuid" newDataType="VARCHAR(36)" />
     </changeSet>
+    <changeSet id="V4__ModifyDataTypePatientUuid" author="onechesz">
+        <modifyDataType tableName="patient" columnName="uuid" newDataType="VARCHAR(36)" />
+    </changeSet>
 </databaseChangeLog>

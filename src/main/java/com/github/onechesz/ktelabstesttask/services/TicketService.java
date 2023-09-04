@@ -4,8 +4,10 @@ import com.github.onechesz.ktelabstesttask.dtos.ticket.TicketDTOO;
 import com.github.onechesz.ktelabstesttask.models.DoctorModel;
 import com.github.onechesz.ktelabstesttask.models.TicketModel;
 import com.github.onechesz.ktelabstesttask.repositories.DoctorRepository;
+import com.github.onechesz.ktelabstesttask.repositories.PatientRepository;
 import com.github.onechesz.ktelabstesttask.repositories.TicketRepository;
 import com.github.onechesz.ktelabstesttask.utils.exceptions.ScheduleNotCreatedException;
+import com.github.onechesz.ktelabstesttask.utils.exceptions.TicketNotTakenException;
 import com.github.onechesz.ktelabstesttask.utils.exceptions.TicketsNotRequestedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +23,12 @@ import java.util.Optional;
 public class TicketService {
     private final DoctorRepository doctorRepository;
     private final TicketRepository ticketRepository;
+    private final PatientRepository patientRepository;
 
-    public TicketService(DoctorRepository doctorRepository, TicketRepository ticketRepository) {
+    public TicketService(DoctorRepository doctorRepository, TicketRepository ticketRepository, PatientRepository patientRepository) {
         this.doctorRepository = doctorRepository;
         this.ticketRepository = ticketRepository;
+        this.patientRepository = patientRepository;
     }
 
     public void createDailySchedule(int doctorId, LocalDateTime scheduleStartTime, int duration, int count) {
@@ -63,5 +67,21 @@ public class TicketService {
             return ticketRepository.findAllByStartTimeBetweenAndDoctorModelAndPatientModel(date.atStartOfDay(), date.plusDays(1).atStartOfDay(), doctorModelOptional.get(), null).stream().map(TicketModel::convertToTicketDTOO).toList();
 
         throw new TicketsNotRequestedException("Врач с данным идентификатором не найден.");
+    }
+
+    public void takeByIdAndPatientId(int id, int patientId) {
+        ticketRepository.findById(id).ifPresentOrElse(ticketModel -> {
+            if (ticketModel.getPatientModel() == null)
+                patientRepository.findById(patientId).ifPresentOrElse(patientModel -> {
+                    ticketModel.setPatientModel(patientModel);
+                    ticketRepository.save(ticketModel);
+                }, () -> {
+                    throw new TicketNotTakenException("Пациент с данным идентификатором не найден.");
+                });
+            else
+                throw new TicketNotTakenException("Нельзя занять занятый талон.");
+        }, () -> {
+            throw new TicketNotTakenException("Талон с данным идентификатором не найден.");
+        });
     }
 }
